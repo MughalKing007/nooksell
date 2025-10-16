@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOOKSell - Premium Digital Products and Courses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-color: #232f3e; --secondary-color: #ff9900; --accent-color: #37475a;
+            --text-color: #0f1111; --light-bg: #f3f3f3; --white: #ffffff; --border-color: #ddd;
+            --success-color: #067d62; --danger-color: #c40000;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1); --shadow-hover: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        [data-theme="dark"] {
+            --primary-color: #131921; --accent-color: #232f3e; --text-color: #ffffff;
+            --light-bg: #1a1a1a; --white: #232f3e; --border-color: #3a3a3a;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--light-bg);
+            color: var(--text-color); transition: all 0.3s ease; }
+        .header { background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--white); padding: 0; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 1000; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%;
+            flex-wrap: wrap; gap: 15px; }
+        .logo { font-size: 28px; font-weight: bold; color: var(--white); display: flex;
+            align-items: center; gap: 10px; cursor: pointer; transition: all 0.3s; }
+        .logo:hover { transform: scale(1.05); }
+        .logo i { color: var(--secondary-color); }
+        .header-controls { display: flex; gap: 20px; align-items: center; }
+        .language-selector select { background: var(--white); color: var(--text-color); border: none;
+            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .theme-toggle { background: var(--secondary-color); border: none; padding: 10px 15px;
+            border-radius: 5px; cursor: pointer; color: var(--primary-color); font-size: 18px; transition: all 0.3s; }
+        .theme-toggle:hover { transform: scale(1.1); }
+        .search-container { flex: 1; max-width: 600px; }
+        .search-bar { display: flex; width: 100%; }
+        .search-bar input { flex: 1; padding: 12px 20px; border: none; border-radius: 5px 0 0 5px; font-size: 16px; }
+        .search-bar button { background: var(--secondary-color); border: none; padding: 12px 25px;
+            border-radius: 0 5px 5px 0; cursor: pointer; color: var(--primary-color); transition: all 0.3s; }
+        .search-bar button:hover { background: #f7941d; }
+        .category-filter { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .category-chip { background: var(--white); color: var(--text-color); padding: 5px 15px;
+            border-radius: 20px; cursor: pointer; font-size: 14px; transition: all 0.3s; border: 2px solid transparent; }
+        .category-chip:hover, .category-chip.active { background: var(--secondary-color);
+            color: var(--primary-color); border-color: var(--secondary-color); }
+        .hero-slider { position: relative; height: 400px; overflow: hidden; }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out;
+            background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .slide.active { opacity: 1; }
+        .slide-content { text-align: center; color: var(--white); background: rgba(0,0,0,0.6);
+            padding: 40px; border-radius: 10px; animation: slideUp 1s ease-out; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .slide-content h1 { font-size: 48px; margin-bottom: 20px; }
+        .slide-content p { font-size: 20px; margin-bottom: 30px; }
+        .cta-button { background: var(--secondary-color); color: var(--primary-color); padding: 15px 40px;
+            border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4); }
+        .slider-controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 10px; }
+        .slider-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5);
+            cursor: pointer; transition: all 0.3s; }
+        .slider-dot.active { background: var(--secondary-color); width: 30px; border-radius: 6px; }
+        .categories-section, .products-section, .features-section { padding: 50px 5%; }
+        .products-section { background: var(--white); }
+        .features-section { background: var(--light-bg); }
+        .section-title { font-size: 32px; margin-bottom: 30px; color: var(--text-color); position: relative; padding-bottom: 15px; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100px;
+            height: 4px; background: var(--secondary-color); }
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .category-card { background: var(--white); padding: 30px; border-radius: 10px; text-align: center;
+            cursor: pointer; transition: all 0.3s; box-shadow: var(--shadow); }
+        .category-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .category-card i { font-size: 48px; color: var(--secondary-color); margin-bottom: 15px; }
+        .category-card h3 { font-size: 18px; color: var(--text-color); }
+        .products-header { display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+        .filter-sort { display: flex; gap: 15px; }
+        .filter-sort select { padding: 10px 15px; border: 1px solid var(--border-color); border-radius: 5px;
+            background: var(--light-bg); color: var(--text-color); cursor: pointer; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .product-card { background: var(--light-bg); border-radius: 10px; overflow: hidden;
+            box-shadow: var(--shadow); transition: all 0.3s; cursor: pointer; position: relative; }
+        .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+        .product-icon-badge { position: absolute; top: 10px; right: 10px; width: 50px; height: 50px;
+            background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .product-icon-badge img { width: 100%; height: 100%; object-fit: contain; }
+        .product-image { width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s; }
+        .product-card:hover .product-image { transform: scale(1.05); }
+        .product-info { padding: 20px; }
+        .product-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: var(--text-color); }
+        .product-rating { color: var(--secondary-color); margin-bottom: 10px; }
+        .product-price { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .current-price { font-size: 24px; font-weight: bold; color: var(--danger-color); }
+        .original-price { font-size: 18px; text-decoration: line-through; color: #666; }
+        .product-actions { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer;
+            font-weight: bold; transition: all 0.3s; }
+        .btn-primary { background: var(--secondary-color); color: var(--primary-color); }
+        .btn-primary:hover { background: #f7941d; }
+        .btn-secondary { background: var(--primary-color); color: var(--white); }
+        .btn-secondary:hover { background: var(--accent-color); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: var(--white); padding: 30px; border-radius: 10px; text-align: center;
+            box-shadow: var(--shadow); }
+        .feature-card i { font-size: 48px; color: var(--secondary-color); margin-bottom: 20px; }
+        .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: var(--text-color); }
+        .feature-card p { color: #666; line-height: 1.6; }
+        .footer { background: var(--primary-color); color: var(--white); padding: 40px 5%; margin-top: 50px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px; margin-bottom: 30px; }
+        .footer-section h3 { margin-bottom: 15px; color: var(--secondary-color); }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 10px; }
+        .footer-section a { color: var(--white); text-decoration: none; transition: color 0.3s; }
+        .footer-section a:hover { color: var(--secondary-color); }
+        .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .footer-ratings { display: flex; justify-content: center; gap: 5px; margin-top: 15px;
+            font-size: 20px; color: var(--secondary-color); }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white;
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); cursor: pointer;
+            transition: all 0.3s; z-index: 1000; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .whatsapp-float:hover { transform: scale(1.2); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--white); padding: 30px; border-radius: 10px; max-width: 800px;
+            width: 90%; max-height: 90vh; overflow-y: auto; animation: modalSlideIn 0.3s ease-out; }
+        @keyframes modalSlideIn { from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-close { background: none; border: none; font-size: 30px; cursor: pointer; color: var(--text-color); }
+        .product-detail-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px; margin-bottom: 20px; }
+        .product-detail-images img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px;
+            cursor: pointer; transition: all 0.3s; }
+        .product-detail-images img:hover { transform: scale(1.05); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--text-color); }
+        .form-group label.required::after { content: '*'; color: var(--danger-color); margin-left: 5px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px;
+            border: 1px solid var(--border-color); border-radius: 5px; font-size: 16px;
+            background: var(--light-bg); color: var(--text-color); }
+        .payment-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px; margin: 20px 0; }
+        .payment-method { padding: 15px; border: 2px solid var(--border-color); border-radius: 5px;
+            cursor: pointer; text-align: center; transition: all 0.3s; }
+        .payment-method:hover, .payment-method.active { border-color: var(--secondary-color);
+            background: var(--secondary-color); color: var(--primary-color); }
+        .payment-method i { font-size: 24px; margin-bottom: 5px; }
+        .payment-fields { display: none; margin-top: 20px; }
+        .payment-fields.active { display: block; }
+        .inquiry-section { margin-top: 30px; padding: 20px; background: var(--light-bg);
+            border-radius: 10px; border-left: 4px solid var(--secondary-color); }
+        .inquiry-section h4 { margin-bottom: 15px; color: var(--text-color); }
+        .inquiry-section textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color);
+            border-radius: 5px; font-size: 14px; background: var(--white); color: var(--text-color);
+            resize: vertical; min-height: 80px; }
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; }
+        .lightbox-content img { width: 100%; height: auto; max-height: 90vh; object-fit: contain;
+            border-radius: 10px; box-shadow: 0 0 50px rgba(255,255,255,0.1); }
+        .lightbox-close { position: absolute; top: -40px; right: 0; background: none; border: none;
+            color: white; font-size: 40px; cursor: pointer; transition: all 0.3s; }
+        .lightbox-close:hover { transform: scale(1.2); }
+        .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2);
+            border: none; color: white; font-size: 30px; padding: 15px 20px; cursor: pointer;
+            border-radius: 5px; transition: all 0.3s; }
+        .lightbox-nav:hover { background: rgba(255,255,255,0.4); }
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+        .social-links-footer { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .social-links-footer a { width: 40px; height: 40px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 20px; transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); background: transparent !important; color: white; 
+            border: 2px solid rgba(255,255,255,0.3); }
+        .social-links-footer a:hover { transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .notification { position: fixed; top: 20px; right: 20px; background: var(--success-color);
+            color: white; padding: 15px 25px; border-radius: 5px; box-shadow: var(--shadow-hover);
+            z-index: 3000; animation: slideInRight 0.3s ease-out; }
+        @keyframes slideInRight { from { transform: translateX(400px); } to { transform: translateX(0); } }
+        .stats-counter .stat-item { animation: fadeInUp 0.8s ease-out; }
+        .stats-counter .stat-number { font-size: 48px; font-weight: bold; color: var(--secondary-color); margin-bottom: 10px; }
+        .stats-counter .stat-label { font-size: 16px; color: var(--text-color); opacity: 0.8; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .mobile-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu-close { position: absolute; top: 20px; right: 20px; background: none; border: none;
+            color: white; font-size: 30px; cursor: pointer; }
+        .mobile-menu-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .mobile-menu-content a { color: white; font-size: 20px; text-decoration: none; padding: 10px 20px; }
+        .mobile-menu-content a:hover { background: var(--secondary-color); border-radius: 5px; }
+
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; }
+            .search-container { width: 100%; max-width: 100%; }
+            .logo { font-size: 22px; }
+            .slide-content h1 { font-size: 28px; }
+            .slide-content p { font-size: 16px; }
+            .slide-content { padding: 25px; }
+            .products-grid { grid-template-columns: 1fr; gap: 15px; }
+            .product-card { margin: 0 10px; }
+            .categories-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; }
+            .modal-content { padding: 20px; width: 95%; }
+            .payment-methods { grid-template-columns: repeat(2, 1fr); }
+            
+            /* Mobile menu */
+            .mobile-menu-btn { display: block; }
+            .header-controls { display: none; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <header class="header">
+        <div class="header-top">
+            <div class="logo" onclick="window.location.reload()"><i class="fas fa-graduation-cap"></i><span data-i18n="site_name">NOOKSell</span></div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search for courses, apps, and more..." data-i18n-placeholder="search_placeholder"/>
+                    <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="category-filter" id="categoryFilter"></div>
+            </div>
+            <div class="header-controls">
+                <div class="language-selector">
+                    <select id="languageSelector" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="ur">Urdu - اردو</option>
+                        <option value="zh">Chinese - 中文</option>
+                        <option value="ja">Japanese - 日本語</option>
+                        <option value="es">Spanish - Español</option>
+                        <option value="el">Greek - Ελληνικά</option>
+                        <option value="hi">Hindi - हिन्दी</option>
+                        <option value="ar">Arabic - العربية</option>
+                    </select>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" onclick="toggleMobileMenu()">&times;</button>
+        <div class="mobile-menu-content">
+            <a href="#" onclick="toggleMobileMenu(); showAboutModal()">About</a>
+            <a href="#" onclick="toggleMobileMenu(); showPrivacyModal()">Privacy Policy</a>
+            <a href="#" onclick="toggleMobileMenu(); showDeliveryStatus()">Check Delivery Status</a>
+            <div class="language-selector">
+                <select id="mobileLanguageSelector" onchange="changeLanguage(this.value); toggleMobileMenu()">
+                    <option value="en">English</option>
+                    <option value="ur">Urdu - اردو</option>
+                    <option value="zh">Chinese - 中文</option>
+                    <option value="ja">Japanese - 日本語</option>
+                    <option value="es">Spanish - Español</option>
+                    <option value="el">Greek - Ελληνικά</option>
+                    <option value="hi">Hindi - हिन्दी</option>
+                    <option value="ar">Arabic - العربية</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="toggleTheme(); toggleMobileMenu()">Toggle Theme</button>
+        </div>
+    </div>
+
+    <section class="hero-slider" id="heroSlider">
+        <div class="slide active" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=1200') center/cover;">
+            <div class="slide-content"><h1 data-i18n="slide1_title">Premium Digital Products</h1><p data-i18n="slide1_subtitle">Learn from the best courses and boost your skills</p>
+                <button class="cta-button" onclick="scrollToProducts()" data-i18n="slide1_cta">Explore Courses</button></div>
+        </div>
+        <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200') center/cover;">
+            <div class="slide-content"><h1 data-i18n="slide2_title">Apps &amp; Digital Tools</h1><p data-i18n="slide2_subtitle">Get access to premium applications and software</p>
+                <button class="cta-button" onclick="scrollToProducts()" data-i18n="slide2_cta">Browse Apps</button></div>
+        </div>
+        <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200') center/cover;">
+            <div class="slide-content"><h1 data-i18n="slide3_title">Special Offers</h1><p data-i18n="slide3_subtitle">Up to 50% off on selected products</p>
+                <button class="cta-button" onclick="scrollToProducts()" data-i18n="slide3_cta">Shop Now</button></div>
+        </div>
+        <div class="slider-controls">
+            <span class="slider-dot active" onclick="changeSlide(0)"></span>
+            <span class="slider-dot" onclick="changeSlide(1)"></span>
+            <span class="slider-dot" onclick="changeSlide(2)"></span>
+        </div>
+    </section>
+
+    <section class="categories-section">
+        <h2 class="section-title" data-i18n="categories_title">Browse Categories</h2>
+        <div class="categories-grid" id="categoriesGrid"></div>
+    </section>
+
+    <section class="products-section" id="productsSection">
+        <div class="products-header">
+            <h2 class="section-title" data-i18n="products_title">Featured Products</h2>
+            <div class="filter-sort">
+                <select id="sortSelect" onchange="sortProducts()">
+                    <option value="default" data-i18n="sort_default">Sort By</option>
+                    <option value="price-low" data-i18n="sort_price_low">Price: Low to High</option>
+                    <option value="price-high" data-i18n="sort_price_high">Price: High to Low</option>
+                    <option value="rating" data-i18n="sort_rating">Rating</option>
+                </select>
+            </div>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <section class="features-section">
+        <h2 class="section-title" data-i18n="features_title">Why Choose Us</h2>
+        <div class="features-grid">
+            <div class="feature-card"><i class="fas fa-lock"></i><h3 data-i18n="feature1_title">Secure Payments</h3>
+                <p data-i18n="feature1_desc">We offer multiple secure payment options including Bitcoin, JazzCash, Bank Transfer, and more. Your financial information is always protected with industry-standard encryption.</p></div>
+            <div class="feature-card"><i class="fas fa-rocket"></i><h3 data-i18n="feature2_title">Instant Delivery</h3>
+                <p data-i18n="feature2_desc">Get instant access to your purchased products once payment is confirmed. No waiting time! Your digital products will be available in your account immediately after purchase.</p></div>
+            <div class="feature-card"><i class="fas fa-headset"></i><h3 data-i18n="feature3_title">24/7 Support</h3>
+                <p data-i18n="feature3_desc">Our dedicated support team is available round the clock to assist you with any queries. We are committed to ensuring you have the best experience with our products.</p></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3 data-i18n="footer_about">About Us</h3>
+                <p data-i18n="footer_about_text">NOOKSell is your trusted source for premium digital products, courses, and applications. We deliver quality content instantly.</p>
+                <div class="social-links-footer" id="socialIconsContainer">
+                    <!-- Social links loaded dynamically from admin panel -->
+                </div>
+            </div>
+            <div class="footer-section"><h3 data-i18n="footer_links">Quick Links</h3><ul>
+                <li><a href="#" onclick="showAboutModal()" data-i18n="footer_about_link">About</a></li>
+                <li><a href="#" onclick="showPrivacyModal()" data-i18n="footer_privacy">Privacy Policy</a></li>
+                <li><a href="#" onclick="showDeliveryStatus()" data-i18n="footer_delivery">Check Delivery Status</a></li></ul></div>
+            <div class="footer-section">
+                <h3 data-i18n="footer_contact">Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> hackkaryou@gmail.com</p>
+                <p><i class="fab fa-whatsapp"></i> +1 (954) 352-7487</p>
+                <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                    <h4 style="margin-bottom: 15px; color: var(--secondary-color);">Have Questions?</h4>
+                    <form id="contactForm" onsubmit="submitContactForm(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                        <input type="email" id="contactEmail" placeholder="Your Email Address" required="required"
+                            style="padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--white); color: var(--text-color);"/>
+                        <textarea id="contactMessage" placeholder="Your Question or Message" rows="3" required="required"
+                            style="padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--white); color: var(--text-color); resize: vertical;"></textarea>
+                        <button type="submit" style="padding: 10px 20px; background: var(--secondary-color); color: var(--primary-color); border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-paper-plane"></i> Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-counter" id="statsCounter" style="padding: 40px 5%; background: rgba(0,0,0,0.1); margin-top: 30px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="0" id="totalVisitors">0</div>
+                    <div class="stat-label">Total Visitors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="0" id="totalCourses">0</div>
+                    <div class="stat-label">Total Courses</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="0" id="happyStudents">0</div>
+                    <div class="stat-label">Happy Students</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="0" id="countriesServed">0</div>
+                    <div class="stat-label">Countries Served</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p data-i18n="footer_copyright">© 2023 NOOKSell. All rights reserved.</p>
+            <div class="footer-ratings">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/19543527487" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalProductTitle"></h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalProductContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function initializeStorage() {
+            if (!localStorage.getItem('categories')) {
+                localStorage.setItem('categories', JSON.stringify([
+                    {id: 1, name: 'Web Development', icon: 'fa-code', count: 0},
+                    {id: 2, name: 'Mobile Apps', icon: 'fa-mobile-alt', count: 0},
+                    {id: 3, name: 'Design', icon: 'fa-palette', count: 0},
+                    {id: 4, name: 'Marketing', icon: 'fa-chart-line', count: 0},
+                    {id: 5, name: 'Business', icon: 'fa-briefcase', count: 0},
+                    {id: 6, name: 'Photography', icon: 'fa-camera', count: 0}
+                ]));
+            }
+            if (!localStorage.getItem('socialLinks')) {
+                localStorage.setItem('socialLinks', JSON.stringify([
+                    {id: 1, platform: 'Facebook', icon: 'fa-facebook', url: 'https://facebook.com', color: '#1877f2'},
+                    {id: 2, platform: 'Twitter', icon: 'fa-twitter', url: 'https://twitter.com', color: '#1da1f2'},
+                    {id: 3, platform: 'Instagram', icon: 'fa-instagram', url: 'https://instagram.com', color: '#e4405f'},
+                    {id: 4, platform: 'LinkedIn', icon: 'fa-linkedin', url: 'https://linkedin.com', color: '#0077b5'},
+                    {id: 5, platform: 'YouTube', icon: 'fa-youtube', url: 'https://youtube.com', color: '#ff0000'}
+                ]));
+            }
+            if (!localStorage.getItem('products')) {
+                localStorage.setItem('products', JSON.stringify([
+                    {id: 1, title: 'Complete Web Development Bootcamp', category: 'Web Development', price: 15.99, originalPrice: 18.99, discount: 16,
+                        rating: 4.5, image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400',
+                        icon: 'https://img.icons8.com/fluency/96/code.png',
+                        images: ['https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400', 
+                                 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400',
+                                 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400'],
+                        youtubeLinks: ['https://www.youtube.com/watch?v=VkyNqGsfJdM&list=RDVkyNqGsfJdM&start_radio=1'],
+                        description: 'Learn web development from scratch', driveLink: '', featured: true},
+                    {id: 2, title: 'Mobile App Development Course', category: 'Mobile Apps', price: 24.99, originalPrice: 29.99, discount: 17,
+                        rating: 4.8, image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400',
+                        icon: 'https://img.icons8.com/fluency/96/smartphone-tablet.png',
+                        images: ['https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400',
+                                 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400'],
+                        youtubeLinks: [],
+                        description: 'Build amazing mobile apps', driveLink: '', featured: true},
+                    {id: 3, title: 'Graphic Design Masterclass', category: 'Design', price: 19.99, originalPrice: 24.99, discount: 20,
+                        rating: 4.7, image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400',
+                        icon: 'https://img.icons8.com/fluency/96/design.png',
+                        images: ['https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400',
+                                 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400'],
+                        youtubeLinks: [],
+                        description: 'Master graphic design skills', driveLink: '', featured: true},
+                    {id: 4, title: 'Digital Marketing Pro', category: 'Marketing', price: 14.99, originalPrice: 19.99, discount: 25,
+                        rating: 4.6, image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
+                        icon: 'https://img.icons8.com/fluency/96/marketing.png',
+                        images: ['https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
+                                 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400'],
+                        youtubeLinks: [],
+                        description: 'Learn digital marketing strategies', driveLink: '', featured: true}
+                ]));
+            }
+            if (!localStorage.getItem('orders')) localStorage.setItem('orders', JSON.stringify([]));
+            if (!localStorage.getItem('settings')) {
+                localStorage.setItem('settings', JSON.stringify({
+                    storeName: 'NOOKSell', email: 'hackkaryou@gmail.com', phone: '+1 (954) 352-7487',
+                    currency: 'USD', twoFactorAuth: false, emailNotifications: true,
+                    paymentMethods: {easypaisa: true, jazzcash: true, bitcoin: true, ethereum: true, dogecoin: true, nayapay: true, bankTransfer: true, paypal: true, upi: true, simplepay: true}
+                }));
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            icon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        const translations = {
+            en: { search_placeholder: "Search for courses, apps, and more...", explore: "Explore Courses" },
+            ur: { search_placeholder: "کورسز، ایپس اور مزید تلاش کریں...", explore: "کورسز دیکھیں" },
+            zh: { search_placeholder: "搜索课程、应用程序等...", explore: "探索课程" },
+            ja: { search_placeholder: "コース、アプリなどを検索...", explore: "コースを探す" },
+            es: { search_placeholder: "Buscar cursos, aplicaciones y más...", explore: "Explorar cursos" },
+            el: { search_placeholder: "Αναζήτηση μαθημάτων, εφαρμογών και άλλα...", explore: "Εξερεύνηση μαθημάτων" }
+        };
+
+        function changeLanguage(lang) {
+            const searchInput = document.getElementById('searchInput');
+            if (translations[lang]) {
+                searchInput.placeholder = translations[lang].search_placeholder;
+                localStorage.setItem('language', lang);
+            }
+        }
+
+        let currentSlide = 0;
+        let slides = [];
+        
+        function loadSlidesFromStorage() {
+            const storedSlides = JSON.parse(localStorage.getItem('heroSlides') || '[]');
+            if (storedSlides.length > 0) {
+                slides = storedSlides.sort((a, b) => a.order - b.order);
+                renderSlides();
+            }
+        }
+
+        function renderSlides() {
+            const sliderContainer = document.getElementById('heroSlider');
+            const slidesHTML = slides.map((slide, index) => {
+                return '<div class="slide ' + (index === 0 ? 'active' : '') + '" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(' + slide.image + ') center/cover;">' +
+                    '<div class="slide-content">' +
+                        '<h1 data-i18n="slide' + (index + 1) + '_title">' + slide.title + '</h1>' +
+                        '<p data-i18n="slide' + (index + 1) + '_subtitle">' + slide.description + '</p>' +
+                        '<button class="cta-button" onclick="scrollToProducts()" data-i18n="slide' + (index + 1) + '_cta">' + slide.buttonText + '</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+            
+            const dotsHTML = slides.map((_, index) => {
+                return '<span class="slider-dot ' + (index === 0 ? 'active' : '') + '" onclick="changeSlide(' + index + ')"></span>';
+            }).join('');
+            
+            sliderContainer.innerHTML = slidesHTML + '<div class="slider-controls">' + dotsHTML + '</div>';
+        }
+
+        function changeSlide(index) {
+            const slideElements = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            slideElements[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slideElements[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+        
+        setInterval(function() { 
+            if (slides.length > 0) {
+                changeSlide((currentSlide + 1) % slides.length); 
+            }
+        }, 5000);
+
+        function loadCategories() {
+            const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+            const grid = document.getElementById('categoriesGrid');
+            const filter = document.getElementById('categoryFilter');
+            grid.innerHTML = '';
+            filter.innerHTML = '<div class="category-chip active" onclick="filterByCategory(\'all\', event)">All</div>';
+            categories.forEach(function(cat) {
+                grid.innerHTML += '<div class="category-card" onclick="filterByCategory(\'' + cat.name + '\', event)">' +
+                    '<i class="fas ' + cat.icon + '"></i><h3>' + cat.name + '</h3></div>';
+                filter.innerHTML += '<div class="category-chip" onclick="filterByCategory(\'' + cat.name + '\', event)">' + cat.name + '</div>';
+            });
+        }
+
+        function loadSocialLinks() {
+            const socialLinks = JSON.parse(localStorage.getItem('socialLinks') || '[]');
+            const container = document.getElementById('socialIconsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            if (socialLinks.length === 0) {
+                container.innerHTML = '<p style="color: rgba(255,255,255,0.6); font-size: 14px; margin: 0;">No social links configured yet. Add them from admin panel.</p>';
+                return;
+            }
+            socialLinks.forEach(function(link) {
+                container.innerHTML += '<a href="' + link.url + '" target="_blank" rel="noopener noreferrer" title="' + link.platform + '" ' +
+                    'aria-label="' + link.platform + '">' +
+                    '<i class="fab ' + link.icon + '" style="color: white;"></i>' +
+                    '</a>';
+            });
+        }
+
+        let allProducts = [];
+        let filteredProducts = [];
+        
+        function loadProducts() {
+            allProducts = JSON.parse(localStorage.getItem('products') || '[]');
+            filteredProducts = allProducts.slice();
+            displayProducts();
+        }
+
+        function displayProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            filteredProducts.forEach(function(product) {
+                const stars = '★'.repeat(Math.floor(product.rating)) + '☆'.repeat(5 - Math.floor(product.rating));
+                const discountBadge = product.discount ? '<div style="position: absolute; top: 10px; left: 10px; background: var(--danger-color); color: white; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 14px; z-index: 5;">' + product.discount + '% OFF</div>' : '';
+                const iconBadge = product.icon ? '<div class="product-icon-badge"><img src="' + product.icon + '" alt="Icon" onerror="this.src=\'https://via.placeholder.com/40x40?text=Icon\'"/></div>' : '';
+                grid.innerHTML += '<div class="product-card" onclick="showProductDetail(' + product.id + ')">' +
+                    discountBadge +
+                    iconBadge +
+                    '<img src="' + product.image + '" alt="' + product.title + '" class="product-image" onerror="this.src=\'https://via.placeholder.com/400x250?text=Image+Not+Found\'"/>' +
+                    '<div class="product-info">' +
+                        '<div class="product-title">' + product.title + '</div>' +
+                        '<div class="product-rating">' + stars + ' (' + product.rating + ')</div>' +
+                        '<div class="product-price">' +
+                            '<span class="current-price">$' + product.price + '</span>' +
+                            '<span class="original-price">$' + product.originalPrice + '</span>' +
+                        '</div>' +
+                        '<div class="product-actions">' +
+                            '<button class="btn btn-primary" onclick="event.stopPropagation(); showProductDetail(' + product.id + ')">Buy Now</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            });
+        }
+
+        function filterByCategory(category, event) {
+            document.querySelectorAll('.category-chip').forEach(function(chip) { chip.classList.remove('active'); });
+            if (event && event.target) event.target.classList.add('active');
+            if (category === 'all') {
+                filteredProducts = allProducts.slice();
+            } else {
+                filteredProducts = allProducts.filter(function(p) { return p.category === category; });
+            }
+            displayProducts();
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            filteredProducts = allProducts.filter(function(p) { 
+                return p.title.toLowerCase().indexOf(query) !== -1 || p.category.toLowerCase().indexOf(query) !== -1;
+            });
+            displayProducts();
+        }
+
+        function sortProducts() {
+            const sortBy = document.getElementById('sortSelect').value;
+            switch(sortBy) {
+                case 'price-low': filteredProducts.sort(function(a,b) { return a.price - b.price; }); break;
+                case 'price-high': filteredProducts.sort(function(a,b) { return b.price - a.price; }); break;
+                case 'rating': filteredProducts.sort(function(a,b) { return b.rating - a.rating; }); break;
+            }
+            displayProducts();
+        }
+
+        function scrollToProducts() {
+            document.getElementById('productsSection').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function showProductDetail(productId) {
+            const product = allProducts.find(function(p) { return p.id === productId; });
+            if (!product) return;
+            
+            currentProductImages = product.images || [product.image];
+            currentLightboxIndex = 0;
+            
+            const modal = document.getElementById('productModal');
+            const title = document.getElementById('modalProductTitle');
+            const content = document.getElementById('modalProductContent');
+            title.textContent = product.title;
+            const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+            const paymentMethods = settings.paymentMethods || {};
+            
+            let imagesHTML = '<div style="margin-bottom: 25px;">';
+            imagesHTML += '<img id="mainProductImage" src="' + product.images[0] + '" alt="' + product.title + '" style="width: 100%; height: 400px; object-fit: cover; border-radius: 10px; cursor: pointer; margin-bottom: 15px;" onclick="openLightbox(0)" onerror="this.src=\'https://via.placeholder.com/400x400?text=Image+Not+Found\'"/>';
+            imagesHTML += '<div class="product-detail-images">';
+            product.images.forEach(function(img, idx) { 
+                imagesHTML += '<img src="' + img + '" alt="' + product.title + '" onclick="changeMainImage(\'' + img + '\', this, ' + idx + ')" style="border: 2px solid transparent; cursor: pointer;" class="' + (idx === 0 ? 'active' : '') + '" onerror="this.src=\'https://via.placeholder.com/150x150?text=Image+Not+Found\'"/>'; 
+            });
+            imagesHTML += '</div></div>';
+
+            // Generate YouTube video links if available
+            let youtubeHTML = '';
+            if (product.youtubeLinks && product.youtubeLinks.length > 0) {
+                youtubeHTML = '<div style="margin: 20px 0;"><h3>Course Videos</h3>';
+                product.youtubeLinks.forEach(function(link) {
+                    // Extract YouTube video ID
+                    const videoId = extractYouTubeId(link);
+                    if (videoId) {
+                        youtubeHTML += '<div style="margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">' +
+                            '<iframe width="100%" height="315" src="https://www.youtube.com/embed/' + videoId + '" frameborder="0" ' +
+                            'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+                            '<div style="padding: 10px; background: var(--light-bg);">' +
+                                '<a href="' + link + '" target="_blank" style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">' +
+                                    '<i class="fab fa-youtube"></i> Watch on YouTube' +
+                                '</a>' +
+                            '</div>' +
+                        '</div>';
+                    } else {
+                        // If we can't extract video ID, just show the link
+                        youtubeHTML += '<div style="margin-bottom: 15px; padding: 15px; background: var(--light-bg); border-radius: 5px;">' +
+                            '<a href="' + link + '" target="_blank" style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">' +
+                                '<i class="fab fa-youtube"></i> Course Video: ' + link +
+                            '</a>' +
+                        '</div>';
+                    }
+                });
+                youtubeHTML += '</div>';
+            }
+
+            content.innerHTML = imagesHTML +
+                '<p><strong>Category:</strong> ' + product.category + '</p>' +
+                '<p><strong>Rating:</strong> ' + '★'.repeat(Math.floor(product.rating)) + ' (' + product.rating + ')</p>' +
+                (product.discount ? '<p><strong>Discount:</strong> <span style="color:var(--danger-color);font-weight:bold;">' + product.discount + '% OFF</span></p>' : '') +
+                '<p><strong>Price:</strong> <span style="font-size:24px;color:var(--danger-color);">$' + product.price + '</span> ' +
+                '<span style="text-decoration:line-through;">$' + product.originalPrice + '</span></p>' +
+                '<p>' + product.description + '</p>' +
+                youtubeHTML +
+                '<form id="orderForm" onsubmit="submitOrder(event, ' + productId + ')">' +
+                    '<div class="form-group">' +
+                        '<label class="required">Full Name (Letters Only)</label>' +
+                        '<input type="text" name="name" id="customerName" required="required" pattern="[A-Za-z\\s]+" title="Please enter letters only"/>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="required">Email Address (must end with @gmail.com)</label>' +
+                        '<input type="email" name="email" id="customerEmail" required="required" pattern=".*@gmail\\.com$" ' +
+                            'title="Email must end with @gmail.com" placeholder="yourname@gmail.com"/>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="required">Phone Number / WhatsApp</label>' +
+                        '<input type="tel" name="phone" id="customerPhone" required="required" pattern="[0-9]+" ' +
+                            'title="Please enter numbers only" placeholder="1234567890"/>' +
+                        '<small style="color:#666; margin-top:5px; display:block;">Numbers only - WhatsApp number</small>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                        '<label class="required">Select Payment Method</label>' +
+                        '<div class="payment-methods">' +
+                            (paymentMethods.easypaisa ? '<div class="payment-method" onclick="selectPayment(\'easypaisa\', event)"><i class="fas fa-wallet"></i><div>EasyPaisa</div></div>' : '') +
+                            (paymentMethods.jazzcash ? '<div class="payment-method" onclick="selectPayment(\'jazzcash\', event)"><i class="fas fa-money-bill-wave"></i><div>JazzCash</div></div>' : '') +
+                            (paymentMethods.bitcoin ? '<div class="payment-method" onclick="selectPayment(\'bitcoin\', event)"><i class="fab fa-bitcoin"></i><div>Bitcoin</div></div>' : '') +
+                            (paymentMethods.ethereum ? '<div class="payment-method" onclick="selectPayment(\'ethereum\', event)"><i class="fab fa-ethereum"></i><div>Ethereum</div></div>' : '') +
+                            (paymentMethods.dogecoin ? '<div class="payment-method" onclick="selectPayment(\'dogecoin\', event)"><i class="fas fa-coins"></i><div>Dogecoin</div></div>' : '') +
+                            (paymentMethods.nayapay ? '<div class="payment-method" onclick="selectPayment(\'nayapay\', event)"><i class="fas fa-credit-card"></i><div>NayaPay</div></div>' : '') +
+                            (paymentMethods.bankTransfer ? '<div class="payment-method" onclick="selectPayment(\'bank\', event)"><i class="fas fa-university"></i><div>Bank Transfer</div></div>' : '') +
+                            (paymentMethods.paypal ? '<div class="payment-method" onclick="selectPayment(\'paypal\', event)"><i class="fab fa-paypal"></i><div>PayPal</div></div>' : '') +
+                            (paymentMethods.upi ? '<div class="payment-method" onclick="selectPayment(\'upi\', event)"><i class="fas fa-mobile"></i><div>UPI</div></div>' : '') +
+                            (paymentMethods.simplepay ? '<div class="payment-method" onclick="selectPayment(\'simplepay\', event)"><i class="fas fa-money-check"></i><div>SimplePay</div></div>' : '') +
+                        '</div>' +
+                        '<input type="hidden" name="paymentMethod" id="selectedPayment" required="required"/>' +
+                    '</div>' +
+                    '<div id="easypaisa-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Account Holder Name</label><input type="text" name="easypaisa_name" pattern="[A-Za-z\\s]+"/></div>' +
+                        '<div class="form-group"><label>EasyPaisa Number</label><input type="text" name="easypaisa_number" pattern="[0-9]+"/></div>' +
+                    '</div>' +
+                    '<div id="jazzcash-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Account Holder Name</label><input type="text" name="jazzcash_name" pattern="[A-Za-z\\s]+"/></div>' +
+                        '<div class="form-group"><label>JazzCash Number</label><input type="text" name="jazzcash_number" pattern="[0-9]+"/></div>' +
+                    '</div>' +
+                    '<div id="bitcoin-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Bitcoin Wallet ID</label><input type="text" name="bitcoin_id"/></div>' +
+                    '</div>' +
+                    '<div id="ethereum-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Ethereum Wallet ID</label><input type="text" name="ethereum_id"/></div>' +
+                    '</div>' +
+                    '<div id="dogecoin-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Dogecoin Wallet ID</label><input type="text" name="dogecoin_id"/></div>' +
+                    '</div>' +
+                    '<div id="nayapay-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Account Holder Name</label><input type="text" name="nayapay_name" pattern="[A-Za-z\\s]+"/></div>' +
+                        '<div class="form-group"><label>NayaPay Number</label><input type="text" name="nayapay_number" pattern="[0-9]+"/></div>' +
+                    '</div>' +
+                    '<div id="bank-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>Account Holder Name</label><input type="text" name="bank_holder_name" pattern="[A-Za-z\\s]+"/></div>' +
+                        '<div class="form-group"><label>Bank Name</label><input type="text" name="bank_name"/></div>' +
+                        '<div class="form-group"><label>Account Number</label><input type="text" name="account_number" pattern="[0-9]+"/></div>' +
+                    '</div>' +
+                    '<div id="paypal-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>PayPal Email Address</label><input type="email" name="paypal_email" placeholder="your@email.com"/></div>' +
+                    '</div>' +
+                    '<div id="upi-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>UPI ID</label><input type="text" name="upi_id" placeholder="yourname@upi"/></div>' +
+                    '</div>' +
+                    '<div id="simplepay-fields" class="payment-fields">' +
+                        '<div class="form-group"><label>SimplePay Account Number</label><input type="text" name="simplepay_account" pattern="[0-9]+"/></div>' +
+                    '</div>' +
+                    '<div class="inquiry-section">' +
+                        '<h4><i class="fas fa-comment-dots"></i> Have a question about this product? (Optional)</h4>' +
+                        '<textarea id="inquiryMessage" placeholder="Type your question or message here... (Optional - you can leave this blank if you just want to order)"></textarea>' +
+                        '<button type="button" class="btn btn-secondary" onclick="submitInquiry(' + productId + ')" style="margin-top: 10px; width: 100%; padding: 10px;">' +
+                            '<i class="fas fa-paper-plane"></i> Send Inquiry (Optional)' +
+                        '</button>' +
+                    '</div>' +
+                    '<button type="submit" class="btn btn-primary" style="width:100%;padding:15px;margin-top:20px;"><i class="fas fa-shopping-cart"></i> Place Order Now</button>' +
+                '</form>' +
+                '<div id="lightboxModal" class="lightbox">' +
+                    '<button class="lightbox-close" onclick="closeLightbox()">×</button>' +
+                    '<div class="lightbox-content">' +
+                        '<button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)"><i class="fas fa-chevron-left"></i></button>' +
+                        '<img id="lightboxImage" src="" alt="Product" onerror="this.src=\'https://via.placeholder.com/800x600?text=Image+Not+Found\'"/>' +
+                        '<button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)"><i class="fas fa-chevron-right"></i></button>' +
+                    '</div>' +
+                '</div>';
+            modal.classList.add('active');
+        }
+
+        function selectPayment(method, event) {
+            document.querySelectorAll('.payment-method').forEach(function(pm) { pm.classList.remove('active'); });
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+            document.getElementById('selectedPayment').value = method;
+            document.querySelectorAll('.payment-fields').forEach(function(pf) { pf.classList.remove('active'); });
+            document.getElementById(method + '-fields').classList.add('active');
+        }
+
+        function submitOrder(event, productId) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const product = allProducts.find(function(p) { return p.id === productId; });
+            const order = {
+                id: Date.now(),
+                productId: productId,
+                productTitle: product.title,
+                productPrice: product.price,
+                customerName: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                paymentMethod: formData.get('paymentMethod'),
+                paymentDetails: {},
+                status: 'Pending',
+                date: new Date().toISOString()
+            };
+
+            const payment = formData.get('paymentMethod');
+            if (payment === 'easypaisa') order.paymentDetails = {number: formData.get('easypaisa_number')};
+            else if (payment === 'jazzcash') order.paymentDetails = {number: formData.get('jazzcash_number')};
+            else if (payment === 'bitcoin') order.paymentDetails = {walletId: formData.get('bitcoin_id')};
+            else if (payment === 'ethereum') order.paymentDetails = {walletId: formData.get('ethereum_id')};
+            else if (payment === 'dogecoin') order.paymentDetails = {walletId: formData.get('dogecoin_id')};
+            else if (payment === 'nayapay') order.paymentDetails = {number: formData.get('nayapay_number')};
+            else if (payment === 'bank') order.paymentDetails = {bankName: formData.get('bank_name'), accountNumber: formData.get('account_number')};
+            else if (payment === 'paypal') order.paymentDetails = {email: formData.get('paypal_email')};
+            else if (payment === 'upi') order.paymentDetails = {upiId: formData.get('upi_id')};
+            else if (payment === 'simplepay') order.paymentDetails = {account: formData.get('simplepay_account')};
+
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            showNotification('Order placed successfully! We will contact you soon.');
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        let currentLightboxIndex = 0;
+        let currentProductImages = [];
+
+        function changeMainImage(imageSrc, element, index) {
+            const mainImg = document.getElementById('mainProductImage');
+            if (mainImg) {
+                mainImg.src = imageSrc;
+                currentLightboxIndex = index;
+            }
+            document.querySelectorAll('.product-detail-images img').forEach(function(img) {
+                img.style.borderColor = 'transparent';
+                img.classList.remove('active');
+            });
+            if (element) {
+                element.style.borderColor = 'var(--secondary-color)';
+                element.classList.add('active');
+            }
+        }
+
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            const lightbox = document.getElementById('lightboxModal');
+            const lightboxImg = document.getElementById('lightboxImage');
+            if (lightbox && lightboxImg && currentProductImages.length > 0) {
+                lightboxImg.src = currentProductImages[index];
+                lightbox.classList.add('active');
+            }
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightboxModal');
+            if (lightbox) lightbox.classList.remove('active');
+        }
+
+        function navigateLightbox(direction) {
+            currentLightboxIndex += direction;
+            if (currentLightboxIndex < 0) currentLightboxIndex = currentProductImages.length - 1;
+            if (currentLightboxIndex >= currentProductImages.length) currentLightboxIndex = 0;
+            const lightboxImg = document.getElementById('lightboxImage');
+            if (lightboxImg) lightboxImg.src = currentProductImages[currentLightboxIndex];
+        }
+
+        function submitInquiry(productId) {
+            const messageBox = document.getElementById('inquiryMessage');
+            if (!messageBox) return;
+            
+            const message = messageBox.value.trim();
+            if (!message) {
+                showNotification('Please write your question or message first!');
+                return;
+            }
+
+            const product = allProducts.find(function(p) { return p.id === productId; });
+            if (!product) return;
+            
+            const inquiry = {
+                id: Date.now(),
+                productId: productId,
+                productTitle: product.title,
+                email: 'customer@inquiry.com',
+                message: 'Product Inquiry: ' + product.title + '\n\nCustomer Question: ' + message,
+                date: new Date().toISOString(),
+                status: 'Pending'
+            };
+
+            const appeals = JSON.parse(localStorage.getItem('appeals') || '[]');
+            appeals.push(inquiry);
+            localStorage.setItem('appeals', JSON.stringify(appeals));
+
+            showNotification('✓ Your inquiry has been sent successfully! We will respond to you soon via email or WhatsApp.');
+            messageBox.value = '';
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(function() { notif.remove(); }, 3000);
+        }
+
+        // Extract YouTube video ID from URL
+        function extractYouTubeId(url) {
+            // Handle different YouTube URL formats
+            const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[1] && match[1].length === 11) {
+                return match[1];
+            }
+            // Fallback to original regex for other formats
+            const regExp2 = /^.*(youtube\.com\/v\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match2 = url.match(regExp2);
+            return (match2 && match2[2] && match2[2].length === 11) ? match2[2] : null;
+        }
+
+        function showAboutModal() {
+            const modal = document.getElementById('productModal');
+            document.getElementById('modalProductTitle').textContent = 'About Us';
+            document.getElementById('modalProductContent').innerHTML =
+                '<p>Welcome to NOOKSell! We provide premium digital products and courses to help you succeed.</p>' +
+                '<h3>Check Order Status</h3>' +
+                '<div class="form-group">' +
+                    '<label>Enter your email</label>' +
+                    '<input type="email" id="checkEmail" placeholder="Your email address"/>' +
+                '</div>' +
+                '<button class="btn btn-primary" onclick="checkOrderStatus()">Check Status</button>' +
+                '<div id="orderStatus"></div>';
+            modal.classList.add('active');
+        }
+
+        function checkOrderStatus() {
+            const email = document.getElementById('checkEmail').value;
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const userOrders = orders.filter(function(o) { return o.email === email; });
+            const statusDiv = document.getElementById('orderStatus');
+            if (userOrders.length === 0) {
+                statusDiv.innerHTML = '<p style="color:var(--danger-color);margin-top:15px;">No orders found for this email.</p>';
+            } else {
+                statusDiv.innerHTML = '<h4 style="margin-top:20px;">Your Orders:</h4>';
+                userOrders.forEach(function(order) {
+                    statusDiv.innerHTML += '<div style="border:1px solid var(--border-color);padding:15px;margin:10px 0;border-radius:5px;">' +
+                        '<p><strong>' + order.productTitle + '</strong></p>' +
+                        '<p>Status: <span style="color:var(--success-color);">' + order.status + '</span></p>' +
+                        '<p>Date: ' + new Date(order.date).toLocaleDateString() + '</p>' +
+                    '</div>';
+                });
+            }
+        }
+
+        function showDeliveryStatus() {
+            showAboutModal();
+        }
+
+        function showPrivacyModal() {
+            const modal = document.getElementById('productModal');
+            document.getElementById('modalProductTitle').textContent = 'Privacy Policy';
+            document.getElementById('modalProductContent').innerHTML =
+                '<h3>Privacy Policy</h3>' +
+                '<p>We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data and tell you about your privacy rights.</p>' +
+                '<h4>Data Collection</h4>' +
+                '<p>We collect personal information that you provide to us such as name, email address, and payment information.</p>' +
+                '<h4>Data Usage</h4>' +
+                '<p>We use your data to process orders, send notifications, and improve our services.</p>' +
+                '<h4>Data Security</h4>' +
+                '<p>We implement appropriate security measures to protect your personal information.</p>';
+            modal.classList.add('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            const lightbox = document.getElementById('lightboxModal');
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const lightbox = document.getElementById('lightboxModal');
+            if (lightbox && lightbox.classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            initializeStatsCounter();
+            loadSlidesFromStorage();
+            loadCategories();
+            loadProducts();
+            loadSocialLinks();
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeIcon').className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            const savedLang = localStorage.getItem('language') || 'en';
+            document.getElementById('languageSelector').value = savedLang;
+            changeLanguage(savedLang);
+            animateCounters();
+            
+            setInterval(loadSocialLinks, 5000);
+        });
+
+        function submitContactForm(event) {
+            event.preventDefault();
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            const appeal = {
+                id: Date.now(),
+                email: email,
+                message: message,
+                date: new Date().toISOString(),
+                status: 'Pending'
+            };
+            
+            const appeals = JSON.parse(localStorage.getItem('appeals') || '[]');
+            appeals.push(appeal);
+            localStorage.setItem('appeals', JSON.stringify(appeals));
+            
+            showNotification('Thank you! Your message has been sent successfully. We will respond soon.');
+            document.getElementById('contactForm').reset();
+        }
+
+        function initializeStatsCounter() {
+            if (!localStorage.getItem('statsCounter')) {
+                localStorage.setItem('statsCounter', JSON.stringify({
+                    totalVisitors: 15000,
+                    totalCourses: 250,
+                    happyStudents: 8500,
+                    countriesServed: 45
+                }));
+            }
+        }
+
+        function animateCounters() {
+            const stats = JSON.parse(localStorage.getItem('statsCounter') || '{}');
+            
+            document.getElementById('totalVisitors').setAttribute('data-target', stats.totalVisitors || 0);
+            document.getElementById('totalCourses').setAttribute('data-target', stats.totalCourses || 0);
+            document.getElementById('happyStudents').setAttribute('data-target', stats.happyStudents || 0);
+            document.getElementById('countriesServed').setAttribute('data-target', stats.countriesServed || 0);
+            
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+            
+            counters.forEach(function(counter) {
+                const updateCount = function() {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const increment = target / speed;
+                    
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCount, 10);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                };
+                updateCount();
+            });
+        }
+    </script>
+</body>
+</html>
